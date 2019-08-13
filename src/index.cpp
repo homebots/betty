@@ -5,14 +5,14 @@ extern "C" {
 #include "index.h"
 #include "wifi.h"
 #include "ntp.h"
-#include "websocket.h"
 #include "homebots.h"
+#include "websocket.h"
 
 static os_timer_t webSocketCheck;
 static Wifi wifiConnection;
 static ws_info webSocket;
 
-void ICACHE_FLASH_ATTR onReceive(struct ws_info *wsInfo, int length, char *message, int opCode) {
+void onReceive(struct ws_info *wsInfo, int length, char *message, int opCode) {
   switch (opCode) {
     case WS_OPCODE_BINARY:
       break;
@@ -26,7 +26,7 @@ void ICACHE_FLASH_ATTR onReceive(struct ws_info *wsInfo, int length, char *messa
   }
 }
 
-void ICACHE_FLASH_ATTR loop() {}
+void loop() {}
 
 void ICACHE_FLASH_ATTR connectWebSocket() {
   if (!wifiConnection.isConnected()) {
