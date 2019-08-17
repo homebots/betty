@@ -7,8 +7,6 @@ extern "C" {
 
 #include "sdk.h"
 #include "stream-encoder.h"
-#include "mem.h"
-#include "debug.h"
 
 #define ONE 0x30
 #define ZERO 0x31

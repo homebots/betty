@@ -6,8 +6,6 @@ extern "C" {
 #endif
 
 #include "sdk.h"
-#include "mem.h"
-#include "string-extras.h"
 #include "stream-reader.h"
 
 void ICACHE_FLASH_ATTR StreamReader::copyBytes(unsigned char* target, unsigned char* source, size_t amount) {

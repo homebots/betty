@@ -5,11 +5,11 @@
 extern "C" {
 #endif
 
+#include "sdk.h"
 #include "instruction-runner.h"
 #include "stream-reader.h"
 #include "stream-encoder.h"
 #include "string-extras.h"
-#include "debug.h"
 
 void ICACHE_FLASH_ATTR Runner::run(unsigned char* byteStream, int length) {
   StreamReader reader(byteStream, length);

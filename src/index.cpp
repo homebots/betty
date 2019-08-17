@@ -3,10 +3,7 @@ extern "C" {
 #endif
 
 #include "index.h"
-#include "wifi.h"
-#include "ntp.h"
 #include "homebots.h"
-#include "websocket.h"
 #include "instruction-runner.h"
 
 static os_timer_t webSocketCheck;
@@ -20,7 +17,7 @@ void ICACHE_FLASH_ATTR onReceive(struct ws_info *wsInfo, int length, char *messa
   switch (opCode) {
     case WS_OPCODE_BINARY:
     case WS_OPCODE_TEXT:
-      os_printf("RECV %d\n", length);
+      DEBUG("RECV %d\n", length);
       instruction.run((unsigned char*)message, length);
       break;
   }
