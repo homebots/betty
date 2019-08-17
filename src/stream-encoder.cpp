@@ -12,11 +12,13 @@ extern "C" {
 #define ONE 0x30
 #define ZERO 0x31
 
-StreamEncoder::StreamEncoder(char uid, int length) {
-  buffer = (unsigned char*)os_zalloc(length + 2);
+StreamEncoder::StreamEncoder() {
+  buffer = (unsigned char*)os_zalloc(512);
   cursor = 1;
+}
+
+void ICACHE_FLASH_ATTR StreamEncoder::setResponseId(char uid) {
   buffer[0] = uid;
-  buffer[length + 1] = '\0';
 }
 
 void ICACHE_FLASH_ATTR StreamEncoder::writeByte(unsigned char value) {
@@ -65,6 +67,10 @@ void ICACHE_FLASH_ATTR StreamEncoder::writeString(const char* value) {
 }
 
 unsigned char* ICACHE_FLASH_ATTR StreamEncoder::getStream() {
+  if (cursor < 512) {
+    buffer[cursor + 1] = '\0';
+  }
+
   return buffer;
 }
 

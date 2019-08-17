@@ -8,59 +8,67 @@ extern "C" {
 #include "instruction-runner.h"
 #include "stream-reader.h"
 #include "stream-encoder.h"
+#include "string-extras.h"
 #include "pins.h"
 #include "mem.h"
 
-void ICACHE_FLASH_ATTR Runner::run(unsigned char* byteStream) {
-  StreamReader reader(byteStream);
-  uid = reader.readByte();
+#ifndef DEBUG
+// #define DEBUG(...) DEBUG(__VA_ARGS__)
+#define DEBUG(...)
+#endif
 
-  switch (reader.readByte()) {
-    case BiWrite:
-      this->writePin(
-        reader.readByte(),
-        false,
-        reader.readBool()
-      );
 
-    // case BiAnalogWrite:
-    //   this->writePin(
-    //     reader.readByte(),
-    //     true,
-    //     reader.readLong()
-    //   );
-    //   break;
+void ICACHE_FLASH_ATTR Runner::run(unsigned char* byteStream, int length) {
+  StreamReader reader(byteStream, length);
+  StreamEncoder output;
 
-    case BiRead:
-      this->readPin(
-        reader.readByte()
-      );
-      break;
+  output.setResponseId(reader.readByte());
+
+  while (reader.isNotEmpty()) {
+    DEBUG("NEXT \n");
+    switch (reader.readByte()) {
+      case BiWrite:
+        this->writePin(
+          reader.readByte(),
+          reader.readBool()
+        );
+        break;
+
+      case BiRead:
+        this->readPin(
+          &output,
+          reader.readByte()
+        );
+        break;
+      }
   }
-}
-
-void ICACHE_FLASH_ATTR Runner::readPin(unsigned char pin) {
-  StreamEncoder output(uid, 4);
-
-  output.writeByte(BiRead);
-  output.writeByte(pinRead(pin));
 
   sendOutput(&output);
 }
 
-void ICACHE_FLASH_ATTR Runner::writePin(unsigned char pin, bool isAnalog, long value) {
+void ICACHE_FLASH_ATTR Runner::readPin(StreamEncoder* output, unsigned char pin) {
+  bool state = pinRead(pin);
+  DEBUG("READ %d %d", pin, state);
+
+  output->writeByte(BiRead);
+  output->writeByte(state);
+}
+
+void ICACHE_FLASH_ATTR Runner::writePin(unsigned char pin, long value) {
+  DEBUG("WRITE %d %d", pin, value);
   pinWrite(pin, value > 0 ? HIGH : LOW);
 }
 
 void ICACHE_FLASH_ATTR Runner::sendOutput(StreamEncoder* output) {
   char* bytes = (char*)output->getStream();
   int length = strlen((const char*)bytes);
-  os_printf("SEND %d %s\n", length, bytes);
 
-  if (sizeof(bytes) > 0) {
-    ws_send(this->socket, WS_OPCODE_BINARY, bytes, length);
-    os_free(bytes);
-  }
+  if (length == 1) return;
+
+  DEBUG("SEND %d\n", length);
+
+  ws_send(this->socket, WS_OPCODE_BINARY, (char*)bytes, length);
+  os_free(bytes);
 }
 
 #ifdef __cplusplus

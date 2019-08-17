@@ -12,8 +12,8 @@ class StreamEncoder {
   int cursor;
 
   public:
-    StreamEncoder(char uid, int length);
-
+    StreamEncoder();
+    void setResponseId(char uid);
     void writeByte(unsigned char value);
     void writeBool(bool value);
     void writeNumber(int value);

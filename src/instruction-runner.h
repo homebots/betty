@@ -19,9 +19,9 @@ class Runner {
   public:
     ws_info* socket;
 
-    void run(unsigned char* byteStream);
-    void readPin(unsigned char pin);
-    void writePin(unsigned char pin, bool isAnalog, long value);
+    void run(unsigned char* byteStream, int length);
+    void readPin(StreamEncoder* output, unsigned char pin);
+    void writePin(unsigned char pin, long value);
 
   private:
     void sendOutput(StreamEncoder* output);

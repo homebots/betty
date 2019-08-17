@@ -20,11 +20,8 @@ void ICACHE_FLASH_ATTR onReceive(struct ws_info *wsInfo, int length, char *messa
   switch (opCode) {
     case WS_OPCODE_BINARY:
     case WS_OPCODE_TEXT:
-    //   ws_send(wsInfo, WS_OPCODE_TEXT, "OK\0", 3);
-    //   break;
       os_printf("RECV %d\n", length);
-      // message += 8;
-      instruction.run((unsigned char*)message);
+      instruction.run((unsigned char*)message, length);
       break;
   }
 }
