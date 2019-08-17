@@ -17,7 +17,6 @@ void ICACHE_FLASH_ATTR StreamReader::copyBytes(unsigned char* target, unsigned c
 }
 
 bool StreamReader::isNotEmpty() {
-  os_printf("NOT EMPTY %d %d\n", position, length);
   return position < length - 1;
 }
 

@@ -12,6 +12,7 @@ extern "C" {
 typedef enum {
   BiWrite         = 10,
   BiRead          = 11,
+  BiDelay         = 12,
 } InstructionCode;
 
 class Runner {
@@ -22,6 +23,7 @@ class Runner {
     void run(unsigned char* byteStream, int length);
     void readPin(StreamEncoder* output, unsigned char pin);
     void writePin(unsigned char pin, long value);
+    void delayMs(long value);
 
   private:
     void sendOutput(StreamEncoder* output);

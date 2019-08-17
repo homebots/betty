@@ -34,7 +34,7 @@ void ICACHE_FLASH_ATTR connectWebSocket() {
     return;
   }
 
-  if (webSocket.connectionState != CS_CONNECTED) {
+  if (webSocket.connectionState != CS_CONNECTED && webSocket.connectionState != CS_CONNECTING) {
     ws_connect(&webSocket, "ws://hub.homebots.io/hub");
     return;
   }

@@ -9,14 +9,7 @@ extern "C" {
 #include "stream-reader.h"
 #include "stream-encoder.h"
 #include "string-extras.h"
-#include "pins.h"
-#include "mem.h"
-
-#ifndef DEBUG
-// #define DEBUG(...) DEBUG(__VA_ARGS__)
-#define DEBUG(...)
-#endif
-
+#include "debug.h"
 
 void ICACHE_FLASH_ATTR Runner::run(unsigned char* byteStream, int length) {
   StreamReader reader(byteStream, length);
@@ -40,7 +33,13 @@ void ICACHE_FLASH_ATTR Runner::run(unsigned char* byteStream, int length) {
           reader.readByte()
         );
         break;
-      }
+
+      case BiDelay:
+        this->delayMs(
+          reader.readLong()
+        );
+        break;
+    }
   }
 
   sendOutput(&output);
@@ -52,6 +51,11 @@ void ICACHE_FLASH_ATTR Runner::readPin(StreamEncoder* output, unsigned char pin)
 
   output->writeByte(BiRead);
   output->writeByte(state);
+}
+
+void ICACHE_FLASH_ATTR Runner::delayMs(long time) {
+  DEBUG("DELAY %d", time);
+  delay(time);
 }
 
 void ICACHE_FLASH_ATTR Runner::writePin(unsigned char pin, long value) {
