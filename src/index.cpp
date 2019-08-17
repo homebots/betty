@@ -7,21 +7,24 @@ extern "C" {
 #include "ntp.h"
 #include "homebots.h"
 #include "websocket.h"
+#include "instruction-runner.h"
 
 static os_timer_t webSocketCheck;
 static Wifi wifiConnection;
 static ws_info webSocket;
 
-void onReceive(struct ws_info *wsInfo, int length, char *message, int opCode) {
+void ICACHE_FLASH_ATTR onReceive(struct ws_info *wsInfo, int length, char *message, int opCode) {
+  Runner instruction;
+  instruction.socket = wsInfo;
+
   switch (opCode) {
     case WS_OPCODE_BINARY:
-      break;
-
     case WS_OPCODE_TEXT:
-      os_printf("%d %s\n", length, message);
-
-
-      ws_send(wsInfo, WS_OPCODE_TEXT, message, length);
+    //   ws_send(wsInfo, WS_OPCODE_TEXT, "OK\0", 3);
+    //   break;
+      os_printf("RECV %d\n", length);
+      // message += 8;
+      instruction.run((unsigned char*)message);
       break;
   }
 }
@@ -48,6 +51,8 @@ void ICACHE_FLASH_ATTR setup() {
 
   wifiConnection.connectTo("HomeBots", "HomeBots");
   webSocket.onReceive = onReceive;
+
+  system_update_cpu_freq(SYS_CPU_160MHZ);
 }
 
 #ifdef __cplusplus
