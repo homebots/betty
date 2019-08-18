@@ -2,13 +2,14 @@
 extern "C" {
 #endif
 
-#define DEBUG
+// #define DEBUG
 
 #include "index.h"
 #include "homebots.h"
 #include "runner.h"
 #include "stream-decoder.h"
 #include "stream-encoder.h"
+#include "eagle_soc.h"
 
 static os_timer_t webSocketCheck;
 static os_timer_t delayTimer;
@@ -74,6 +75,15 @@ void ICACHE_FLASH_ATTR connectWebSocket() {
 }
 
 void ICACHE_FLASH_ATTR setup() {
+  #ifndef DEBUG
+  system_uart_swap();
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0);
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_GPIO1);
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0RXD_U, FUNC_GPIO3);
+  LOG("UART swapped")
+  #endif
+
   system_update_cpu_freq(SYS_CPU_160MHZ);
 
   runner.input = &input;

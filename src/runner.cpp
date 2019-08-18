@@ -31,6 +31,13 @@ void Runner::next() {
     case BiDelay:
       this->delayMs(input->readLong());
       break;
+
+    case BiPinMode:
+      this->setPinMode(
+        input->readByte(),
+        input->readByte()
+      );
+      break;
   }
 }
 
@@ -50,6 +57,11 @@ void ICACHE_FLASH_ATTR Runner::delayMs(long time) {
 void ICACHE_FLASH_ATTR Runner::writePin(uint8_t pin, long value) {
   LOG("WRITE %d %d\n", pin, value);
   pinWrite(pin, value > 0 ? HIGH : LOW);
+}
+
+void ICACHE_FLASH_ATTR Runner::setPinMode(uint8_t pin, uint8_t value) {
+  LOG("PIN MODE %d %d\n", pin, value);
+  pinMode(pin, value);
 }
 
 #ifdef __cplusplus
