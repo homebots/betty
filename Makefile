@@ -8,6 +8,9 @@ build:
 
 inspect:
 	docker run --rm -it -v$$(pwd)/:/home/espbuilder/project darlanalves/homebots-sdk:latest /bin/bash
+
+asm:
+	docker run --rm -it -v$$(pwd)/:/home/espbuilder/project darlanalves/homebots-sdk:latest make disassemble
 	# docker run --rm -it -v$$(pwd)/:/home/espbuilder/project -v/Users/dizzypotato/labs/@homebots/ESP8266_NONOS_SDK:/home/espbuilder/esp-open-sdk/sdk darlanalves/homebots-sdk:latest
 
 flash:

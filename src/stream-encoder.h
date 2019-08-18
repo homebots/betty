@@ -8,17 +8,18 @@ extern "C" {
 #include "sdk.h"
 
 class StreamEncoder {
-  unsigned char* buffer;
+  uint8_t* stream;
   int cursor;
 
   public:
-    StreamEncoder();
     void setResponseId(char uid);
-    void writeByte(unsigned char value);
+    void reset();
+    void writeByte(uint8_t value);
     void writeBool(bool value);
     void writeNumber(int value);
     void writeString(const char* value);
-    unsigned char* getStream();
+    uint8_t* getStream();
+    int getLength();
 };
 
 #ifdef __cplusplus

@@ -5,7 +5,8 @@
 extern "C" {
 #endif
 
-#include "stream-reader.h"
+#include "c_types.h"
+#include "stream-decoder.h"
 #include "stream-encoder.h"
 #include "websocket.h"
 
@@ -16,17 +17,15 @@ typedef enum {
 } InstructionCode;
 
 class Runner {
-  char uid;
   public:
-    ws_info* socket;
+    uint32_t delay;
+    StreamDecoder* input;
+    StreamEncoder* output;
 
-    void run(unsigned char* byteStream, int length);
-    void readPin(StreamEncoder* output, unsigned char pin);
+    void next();
+    void readPin(unsigned char pin);
     void writePin(unsigned char pin, long value);
     void delayMs(long value);
-
-  private:
-    void sendOutput(StreamEncoder* output);
 };
 
 #ifdef __cplusplus

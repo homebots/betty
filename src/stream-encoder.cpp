@@ -8,20 +8,20 @@ extern "C" {
 #include "sdk.h"
 #include "stream-encoder.h"
 
-#define ONE 0x30
-#define ZERO 0x31
+#define ONE     0x30
+#define ZERO    0x31
 
-StreamEncoder::StreamEncoder() {
-  buffer = (unsigned char*)os_zalloc(512);
+void StreamEncoder::reset() {
+  if (stream != NULL) {
+    os_free(stream);
+  }
+
+  stream = (uint8_t*)os_zalloc(1024);
   cursor = 1;
 }
 
-void ICACHE_FLASH_ATTR StreamEncoder::setResponseId(char uid) {
-  buffer[0] = uid;
-}
-
-void ICACHE_FLASH_ATTR StreamEncoder::writeByte(unsigned char value) {
-  buffer[cursor] = value;
+void ICACHE_FLASH_ATTR StreamEncoder::writeByte(uint8_t value) {
+  stream[cursor] = value;
   cursor++;
 }
 
@@ -36,11 +36,11 @@ void ICACHE_FLASH_ATTR StreamEncoder::writeNumber(int value) {
 
   char hexNumber[5];
   os_sprintf((char*)&hexNumber, "%x", value);
-  int paddingSize = 4 - strlen(hexNumber);
+  int paddingSize = 4 - os_strlen(hexNumber);
 
-  char buffer[9] = "0000";
+  char padding[9] = "0000";
   char output[5] = "0000";
-  strcat((char*) &buffer, (const char*)hexNumber);
+  strcat((char*) &padding, (const char*)hexNumber);
 
   int i;
   int j = 3;
@@ -48,7 +48,7 @@ void ICACHE_FLASH_ATTR StreamEncoder::writeNumber(int value) {
   int end = 4 - paddingSize;
 
   for (i = start; i >= end; i--) {
-    output[j--] = buffer[i];
+    output[j--] = padding[i];
   }
 
   for (i = 0; i < 4; i++) {
@@ -65,12 +65,16 @@ void ICACHE_FLASH_ATTR StreamEncoder::writeString(const char* value) {
   }
 }
 
-unsigned char* ICACHE_FLASH_ATTR StreamEncoder::getStream() {
+uint8_t* ICACHE_FLASH_ATTR StreamEncoder::getStream() {
   if (cursor < 512) {
-    buffer[cursor + 1] = '\0';
+    writeByte('\0');
   }
 
-  return buffer;
+  return stream;
+}
+
+int ICACHE_FLASH_ATTR StreamEncoder::getLength() {
+  return cursor;
 }
 
 #ifdef __cplusplus
