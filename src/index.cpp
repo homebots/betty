@@ -22,10 +22,10 @@ static Runner runner;
 #define MAX_DELAY 6871000
 
 void sendOutput() {
-  char* bytes = (char*)output.getStream();
-  int length = strlen((const char*)bytes);
+  int length = output.getLength();
 
   if (length > 1) {
+    char* bytes = (char*)output.getStream();
     LOG("SEND %d\n", length);
     ws_send(&webSocket, WS_OPCODE_BINARY, (char*)bytes, length);
   }

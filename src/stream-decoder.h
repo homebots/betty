@@ -18,7 +18,7 @@ class StreamDecoder {
     uint8_t* readString();
     char readByte();
     bool readBool();
-    uint32_t readLong();
+    uint32_t readNumber();
     bool isNotEmpty();
     void setStream(char* input, int length);
 };

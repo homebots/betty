@@ -29,7 +29,7 @@ void Runner::next() {
       break;
 
     case BiDelay:
-      this->delayMs(input->readLong());
+      this->delayMs(input->readNumber());
       break;
 
     case BiPinMode:

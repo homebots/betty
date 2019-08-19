@@ -35,12 +35,7 @@ void ICACHE_FLASH_ATTR StreamDecoder::setStream(char* input, int size) {
 }
 
 uint8_t* ICACHE_FLASH_ATTR StreamDecoder::readString() {
-  int size = stream[position];
-
-  if (size > 127) {
-    size = readLong();
-  }
-
+  uint32_t size = readNumber();
   uint8_t* chars = (uint8_t*) os_zalloc(size + 1);
   copyBytes(chars, stream, size);
   position += size;
@@ -63,7 +58,7 @@ bool ICACHE_FLASH_ATTR StreamDecoder::readBool() {
   return value;
 }
 
-uint32_t ICACHE_FLASH_ATTR StreamDecoder::readLong() {
+uint32_t ICACHE_FLASH_ATTR StreamDecoder::readNumber() {
   uint32_t number =
     stream[position++] << 12 |
     stream[position++] << 8 |

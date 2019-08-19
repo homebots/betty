@@ -17,7 +17,7 @@ void StreamEncoder::reset() {
   }
 
   stream = (uint8_t*)os_zalloc(1024);
-  cursor = 1;
+  cursor = 0;
 }
 
 void ICACHE_FLASH_ATTR StreamEncoder::writeByte(uint8_t value) {
