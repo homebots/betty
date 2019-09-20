@@ -18,6 +18,7 @@ class StreamEncoder {
     void writeBool(bool value);
     void writeNumber(int value);
     void writeString(const char* value);
+    void writeBytes(uint8_t* value, int length);
     uint8_t* getStream();
     int getLength();
 };

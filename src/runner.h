@@ -15,6 +15,16 @@ typedef enum {
   BiRead          = 11,
   BiDelay         = 12,
   BiPinMode       = 13,
+  BiI2CSetup      = 19,
+  BiI2CStart      = 20,
+  BiI2CStop       = 21,
+  BiI2CWrite      = 22,
+  BiI2CRead       = 23,
+  BiI2CSetAck     = 24,
+  BiI2CGetAck     = 25,
+  BiI2CList       = 26,
+  BiReadRegister  = 30,
+  BiWriteRegister = 31,
 } InstructionCode;
 
 class Runner {
@@ -24,10 +34,6 @@ class Runner {
     StreamEncoder* output;
 
     void next();
-    void readPin(uint8_t pin);
-    void writePin(uint8_t pin, long value);
-    void setPinMode(uint8_t pin, uint8_t value);
-    void delayMs(long value);
 };
 
 #ifdef __cplusplus

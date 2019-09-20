@@ -20,6 +20,10 @@ bool ICACHE_FLASH_ATTR StreamDecoder::isNotEmpty() {
   return length > 0 && position < length - 1;
 }
 
+void ICACHE_FLASH_ATTR StreamDecoder::end() {
+  position = length;
+}
+
 void ICACHE_FLASH_ATTR StreamDecoder::setStream(char* input, int size) {
   position = 0;
   length = 0;

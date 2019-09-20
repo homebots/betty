@@ -65,6 +65,14 @@ void ICACHE_FLASH_ATTR StreamEncoder::writeString(const char* value) {
   }
 }
 
+void ICACHE_FLASH_ATTR StreamEncoder::writeBytes(uint8_t* value, int length) {
+  int i = 0;
+
+  for (; i < length; i++) {
+    writeByte(value[i]);
+  }
+}
+
 uint8_t* ICACHE_FLASH_ATTR StreamEncoder::getStream() {
   if (cursor < 512) {
     writeByte('\0');

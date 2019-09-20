@@ -2,7 +2,7 @@
 extern "C" {
 #endif
 
-// #define DEBUG
+#define DEBUG
 
 #include "index.h"
 #include "homebots.h"
@@ -19,7 +19,8 @@ static StreamDecoder input;
 static StreamEncoder output;
 static Runner runner;
 
-#define MAX_DELAY 6871000
+#define MAX_DELAY     6871000
+#define MAX_DELAY_US  MAX_DELAY * 1000
 
 void sendOutput() {
   int length = output.getLength();
@@ -37,7 +38,7 @@ void next() {
     runner.next();
 
     if (runner.delay) {
-      os_timer_arm(&delayTimer, runner.delay, 0);
+      ets_timer_arm_new(&delayTimer, runner.delay, 0, 0);
     } else {
       next();
     }
@@ -81,7 +82,7 @@ void ICACHE_FLASH_ATTR setup() {
   PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_GPIO1);
   PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
   PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0RXD_U, FUNC_GPIO3);
-  LOG("UART swapped")
+  LOG("UART swapped");
   #endif
 
   system_update_cpu_freq(SYS_CPU_160MHZ);

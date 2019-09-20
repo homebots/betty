@@ -20,6 +20,7 @@ class StreamDecoder {
     bool readBool();
     uint32_t readNumber();
     bool isNotEmpty();
+    void end();
     void setStream(char* input, int length);
 };
 
