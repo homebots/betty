@@ -88,6 +88,11 @@ void next() {
         output.writeBytes(devices, 0xff);
         break;
 
+      case BiI2CFindDevice:
+        output.writeByte(BiI2CFindDevice);
+        output.writeByte(i2c_findDevice());
+        break;
+
       case BiReadRegister:
         output.writeNumber(READ_PERI_REG(input.readNumber()));
         break;

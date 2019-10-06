@@ -21,6 +21,7 @@ typedef enum {
   BiI2CSetAck     = 24,
   BiI2CGetAck     = 25,
   BiI2CList       = 26,
+  BiI2CFindDevice = 27,
   BiReadRegister  = 30,
   BiWriteRegister = 31,
 } InstructionCode;
