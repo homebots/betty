@@ -6,21 +6,16 @@ extern "C" {
 
 #include "index.h"
 #include "homebots.h"
-#include "runner.h"
 #include "stream-decoder.h"
 #include "stream-encoder.h"
 #include "eagle_soc.h"
 
-static os_timer_t webSocketCheck;
-static os_timer_t delayTimer;
-static Wifi wifiConnection;
-static ws_info webSocket;
-static StreamDecoder input;
-static StreamEncoder output;
-static Runner runner;
-
-#define MAX_DELAY     6871000
-#define MAX_DELAY_US  MAX_DELAY * 1000
+os_timer_t webSocketCheck;
+os_timer_t delayTimer;
+Wifi wifiConnection;
+ws_info webSocket;
+StreamDecoder input;
+StreamEncoder output;
 
 void sendOutput() {
   int length = output.getLength();
@@ -33,18 +28,88 @@ void sendOutput() {
 }
 
 void next() {
+  uint32_t delay = 0;
+
   if (input.isNotEmpty()) {
     LOG("NEXT\n");
-    runner.next();
 
-    if (runner.delay) {
-      ets_timer_arm_new(&delayTimer, runner.delay, 0, 0);
-    } else {
-      next();
+    switch (input.readByte()) {
+      case BiWrite:
+        pinWrite(input.readByte(), input.readBool());
+        break;
+
+      case BiRead:
+        output.writeByte(BiRead);
+        output.writeByte(pinRead(input.readByte()));
+        break;
+
+      case BiDelay:
+        delay = input.readNumber();
+        break;
+
+      case BiPinMode:
+        pinMode(input.readByte(), input.readByte());
+        break;
+
+      case BiI2CSetup:
+        i2c_gpio_init();
+        break;
+
+      case BiI2CStart:
+        i2c_start();
+        break;
+
+      case BiI2CStop:
+        i2c_stop();
+        break;
+
+      case BiI2CWrite:
+        i2c_writeByte(input.readByte());
+        break;
+
+      case BiI2CRead:
+        output.writeByte(BiI2CRead);
+        output.writeByte(i2c_readByte());
+        break;
+
+      case BiI2CSetAck:
+        i2c_setAck(input.readByte());
+        break;
+
+      case BiI2CGetAck:
+        output.writeByte(BiI2CGetAck);
+        output.writeByte(i2c_getAck());
+        break;
+
+      case BiI2CList:
+        uint8_t devices[0xff];
+        i2c_findDevices(devices);
+        output.writeByte(BiI2CList);
+        output.writeBytes(devices, 0xff);
+        break;
+
+      case BiReadRegister:
+        output.writeNumber(READ_PERI_REG(input.readNumber()));
+        break;
+
+      case BiWriteRegister:
+        WRITE_PERI_REG(input.readNumber(), input.readNumber());
+        output.writeByte(1);
+        break;
+
+      default:
+        input.end();
     }
-  } else {
-    sendOutput();
+
+    if (delay) {
+      ets_timer_arm_new(&delayTimer, delay, 0, 0);
+      return;
+    }
+
+    return next();
   }
+
+  sendOutput();
 }
 
 void onReceive(struct ws_info *wsInfo, int length, char *message, int opCode) {
@@ -53,6 +118,7 @@ void onReceive(struct ws_info *wsInfo, int length, char *message, int opCode) {
     case WS_OPCODE_TEXT:
       input.setStream(message, length);
       uint8_t requestId = input.readByte();
+
       LOG("RECV [%d] %d bytes\n", requestId, length);
       output.reset();
       output.writeByte(requestId);
@@ -87,13 +153,12 @@ void ICACHE_FLASH_ATTR setup() {
 
   system_update_cpu_freq(SYS_CPU_160MHZ);
 
-  runner.input = &input;
-  runner.output = &output;
   wifiConnection.connectTo("HomeBots", "HomeBots");
   webSocket.onReceive = onReceive;
 
   os_timer_setfn(&webSocketCheck, (os_timer_func_t *)connectWebSocket, NULL);
   os_timer_setfn(&delayTimer, (os_timer_func_t *)next, NULL);
+
   os_timer_arm(&webSocketCheck, 1000, 1);
 }
 
