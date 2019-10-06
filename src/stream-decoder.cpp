@@ -16,8 +16,8 @@ void ICACHE_FLASH_ATTR StreamDecoder::copyBytes(uint8_t* target, uint8_t* source
   }
 }
 
-bool ICACHE_FLASH_ATTR StreamDecoder::isNotEmpty() {
-  return length > 0 && position < length - 1;
+bool ICACHE_FLASH_ATTR StreamDecoder::isEmpty() {
+  return length == 0 || position >= length;
 }
 
 void ICACHE_FLASH_ATTR StreamDecoder::end() {
