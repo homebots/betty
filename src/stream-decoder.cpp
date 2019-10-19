@@ -57,9 +57,8 @@ char ICACHE_FLASH_ATTR StreamDecoder::readByte() {
 bool ICACHE_FLASH_ATTR StreamDecoder::readBool() {
   char number = (char)stream[position];
   position++;
-  bool value = number == 0x01;
 
-  return value;
+  return number & 0x01;
 }
 
 uint32_t ICACHE_FLASH_ATTR StreamDecoder::readNumber() {

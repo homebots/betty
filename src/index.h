@@ -9,25 +9,27 @@ void setup(void);
 #define MAX_DELAY_US  MAX_DELAY * 1000
 
 typedef enum {
-  BiError         = 0x00,
-  BiWrite         = 0x0a,
-  BiRead          = 0x0b,
-  BiDelay         = 0x0c,
-  BiPinMode       = 0x0d,
-  BiIoSetup       = 0x0e,
-  BiI2CSetup      = 0x13,
-  BiI2CStart      = 0x14,
-  BiI2CStop       = 0x15,
-  BiI2CWrite      = 0x16,
-  BiI2CRead       = 0x17,
-  BiI2CSetAck     = 0x18,
-  BiI2CGetAck     = 0x19,
-  BiI2CList       = 0x1a,
-  BiI2CFindDevice = 0x1b,
-  BiI2CWriteAndAck = 0x1c,
+  BiError           = 0x00,
+  BiWrite           = 0x0a,
+  BiRead            = 0x0b,
+  BiDelay           = 0x0c,
+  BiPinMode         = 0x0d,
+  // BiIoSetup         = 0x0e,
 
-  BiReadRegister  = 0x1e,
-  BiWriteRegister = 0x1f,
+  BiI2CSetup        = 0x13,
+  BiI2CStart        = 0x14,
+  BiI2CStop         = 0x15,
+  BiI2CWrite        = 0x16,
+  BiI2CRead         = 0x17,
+  BiI2CSetAck       = 0x18,
+  BiI2CGetAck       = 0x19,
+  BiI2CList         = 0x1a,
+  BiI2CFindDevice   = 0x1b,
+  BiI2CWriteAndAck  = 0x1c,
+  BiPinType         = 0x1d,
+
+  BiReadRegister    = 0x1e,
+  BiWriteRegister   = 0x1f,
 } InstructionCode;
 
 typedef enum {

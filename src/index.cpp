@@ -59,26 +59,27 @@ void next() {
       output.writeByte(pinRead(input.readByte()));
       break;
 
+    case BiPinMode:
+      pinMode(input.readByte(), (PinMode)input.readByte());
+      break;
+
+    case BiPinType:
+      pinType(input.readByte(), input.readByte());
+      break;
+
     case BiDelay:
       delay = input.readNumber();
       break;
 
-    case BiPinMode:
-      pinMode(input.readByte(), input.readByte());
-      break;
-
     case BiI2CSetup:
-      LOG("i2c init\n");
       i2c_gpio_init();
       break;
 
     case BiI2CStart:
-      LOG("i2c start\n");
       i2c_start();
       break;
 
     case BiI2CStop:
-      LOG("i2c stop\n");
       i2c_stop();
       break;
 
@@ -96,7 +97,6 @@ void next() {
 
     case BiI2CRead:
       byte = i2c_readByte();
-      LOG("i2c read %.2x\n", byte);
       output.writeByte(BiI2CRead);
       output.writeByte(byte);
       break;
@@ -111,7 +111,6 @@ void next() {
       break;
 
     case BiI2CFindDevice:
-      LOG("searching for i2c device\n");
       byte = i2c_findDevice();
 
       if (!byte) {
@@ -132,21 +131,15 @@ void next() {
       break;
 
     case BiReadRegister:
-      output.writeNumber(READ_PERI_REG(input.readNumber()));
+      output.writeNumber((*(volatile uint32_t*)(input.readNumber())));
+      //output.writeNumber(READ_PERI_REG(input.readNumber()));
       break;
 
     case BiWriteRegister:
       WRITE_PERI_REG(input.readNumber(), input.readNumber());
+      output.writeByte(BiWriteRegister);
       output.writeByte(1);
       break;
-
-    case BiIoSetup: {
-      PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0);
-      PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_GPIO1);
-      PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
-      PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0RXD_U, FUNC_GPIO3);
-      break;
-    }
 
     default:
       LOG("ERR invalid command %d\n", byte);
