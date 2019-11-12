@@ -10,11 +10,12 @@ void setup(void);
 
 typedef enum {
   BiError           = 0x00,
+  BiLoop            = 0x01,
+  BiGoTo            = 0x02,
   BiWrite           = 0x0a,
   BiRead            = 0x0b,
   BiDelay           = 0x0c,
   BiPinMode         = 0x0d,
-  // BiIoSetup         = 0x0e,
 
   BiI2CSetup        = 0x13,
   BiI2CStart        = 0x14,
@@ -30,6 +31,9 @@ typedef enum {
 
   BiReadRegister    = 0x1e,
   BiWriteRegister   = 0x1f,
+
+  BiInterrupt       = 0x20,
+
 } InstructionCode;
 
 typedef enum {
@@ -39,6 +43,7 @@ typedef enum {
 
 void sendOutput();
 void next();
+void onInterrupt(int gpioStatus);
 void onReceive(struct ws_info *wsInfo, int length, char *message, int opCode);
 void connectWebSocket();
 void setup();

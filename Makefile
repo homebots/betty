@@ -1,5 +1,5 @@
 FLASH_SPEED   ?= 230400
-ESP_PORT      ?= $$(ls /dev/tty.wchusbserial*)
+ESP_PORT      ?= /dev/tty.wchusbserial1*
 
 .PHONY: build flash
 

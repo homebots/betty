@@ -34,7 +34,12 @@ void error(uint8_t command, uint8_t errorCode) {
   output.writeByte(errorCode);
 }
 
+void onInterrupt(int gpioStatus) {
+  os_timer_arm(&delayTimer, 0, 1);
+}
+
 void next() {
+  bool halt = false;
   uint32_t delay = 0;
   uint32_t number;
   uint8_t byte;
@@ -50,6 +55,14 @@ void next() {
   LOG("NEXT %d\n", command);
 
   switch (command) {
+    case BiLoop:
+      input.rewind();
+      break;
+
+    case BiGoTo:
+      input.goTo(input.readNumber());
+      break;
+
     case BiWrite:
       pinWrite(input.readByte(), input.readBool());
       break;
@@ -141,12 +154,18 @@ void next() {
       output.writeByte(1);
       break;
 
+    case BiInterrupt:
+      attachInterrupt(input.readByte(), (InterruptCallback*)&onInterrupt, GPIO_PIN_INTR_NEGEDGE);
+      break;
+
     default:
       LOG("ERR invalid command %d\n", byte);
       error(command, EInvalidCommand);
   }
 
-  os_timer_arm(&delayTimer, delay, 1);
+  if (!halt) {
+    os_timer_arm(&delayTimer, 0, 1);
+  }
 }
 
 #ifdef DEBUG

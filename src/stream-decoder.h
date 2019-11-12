@@ -21,6 +21,8 @@ class StreamDecoder {
     uint32_t readNumber();
     bool isEmpty();
     void end();
+    void rewind();
+    void goTo(int newPosition);
     void setStream(char* input, int length);
 };
 

@@ -24,6 +24,14 @@ void ICACHE_FLASH_ATTR StreamDecoder::end() {
   position = length;
 }
 
+void ICACHE_FLASH_ATTR StreamDecoder::rewind() {
+  position = 0;
+}
+
+void ICACHE_FLASH_ATTR StreamDecoder::goTo(int newPosition) {
+  position = newPosition;
+}
+
 void ICACHE_FLASH_ATTR StreamDecoder::setStream(char* input, int size) {
   position = 0;
   length = 0;
